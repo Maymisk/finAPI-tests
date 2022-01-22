@@ -1,4 +1,4 @@
-import { getRepository, Repository } from "typeorm";
+import { CustomRepositoryCannotInheritRepositoryError, getRepository, Repository } from "typeorm";
 
 import { Statement } from "../entities/Statement";
 import { ICreateStatementDTO } from "../useCases/createStatement/ICreateStatementDTO";
@@ -41,14 +41,15 @@ export class StatementsRepository implements IStatementsRepository {
     >
   {
     const statement = await this.repository.find({
-      where: { user_id }
+      where: { user_id }, relations: ["transfers"]
     });
 
     const balance = statement.reduce((acc, operation) => {
+
       if (operation.type === 'deposit') {
-        return acc + operation.amount;
+        return acc + Number(operation.amount);
       } else {
-        return acc - operation.amount;
+        return acc - Number(operation.amount);
       }
     }, 0)
 

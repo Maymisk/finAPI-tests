@@ -9,3 +9,15 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=docker
       - POSTGRES_DB=fin_api
+  app:
+    build: .
+    container_name: app_fin_api
+    restart: always
+    ports:
+    - 3333:3333
+    volumes:
+      - .:/usr/app
+    links:
+    - fin_api
+    depends_on:
+      - fin_api
